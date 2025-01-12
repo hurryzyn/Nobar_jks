@@ -17,13 +17,13 @@ class absenSeeder extends Seeder
     {
         DB::table('absens')->insert([
             [
-                'ticket_id' => 1,
+                'booking_id' => 1,
                 'status' => 'not attended',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'ticket_id' => 2,
+                'bookingid' => 2,
                 'status' => 'attended',
                 'created_at' => now(),
                 'updated_at' => now(),

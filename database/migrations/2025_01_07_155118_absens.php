@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('absens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');  // Relasi ke ticket
-            $table->enum('status', ['not attended', 'attended'])->default('not attended');  // Status kehadiran
+            $table->foreignId('booking_id')->constrained()->onDelete('cascade'); 
+            $table->enum('status', ['not attended', 'attended'])->default('not attended');  
             $table->timestamps();
         });
     }

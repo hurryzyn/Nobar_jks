@@ -1,57 +1,63 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Event;
+use App\Models\Payment;
+use Illuminate\Support\Str;
+use Xendit\Xendit;
+use Xendit\Configuration;
+use Xendit\Invoice\InvoiceApi;
+use Xendit\Invoice\CreateInvoiceRequest;
 
 class BookingController extends Controller
 {
-    // Menampilkan daftar pemesanan
-    public function index()
-    {
-        // Mengambil semua data booking untuk user yang sedang login
-        $bookings = Booking::where('user_id', Auth::id())->get();
 
-        // Mengarahkan ke file booking/index.blade.php dan mengirimkan data bookings
-        return view('booking.index', compact('bookings'));
+    public function checkout($id)
+    {
+        $user = Auth::user();
+        $event = Event::findOrFail($id);
+        
+
+        return view('cust.product.chekout', compact('event' , 'user'));
     }
-
-    // Menampilkan detail pemesanan
-    public function show($id)
+    // public function __construct($id)
+    // {
+    //     Configuration::setXenditKey("xnd_development_ondTrBbmN2mRfY9tZnAzn5TQqI2bRyzCJ9CWh1q1vHPrV55eXeC2yyIYQoXF7d");
+    // }
+    public function payment(Request $request)
     {
-        // Mengambil data booking berdasarkan ID
-        $booking = Booking::findOrFail($id);
+        $event = Event::findOrFail($request->event_id);
+        $uuid = (string) Str::uuid();
 
-        // Pastikan booking milik user yang sedang login
-        if ($booking->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
 
-        // Mengarahkan ke file booking/show.blade.php dan mengirimkan data booking
-        return view('booking.show', compact('booking'));
-    }
+        $apiInstance = new InvoiceApi();
+        $create_invoice_request = new CreateInvoiceRequest([
+            'external_id' => $uuid,
+            'description' => $event->description,
+            'amount' => $event->price,
+            'currency' => 'IDR',
 
-    // Mengubah status pemesanan
-    public function update(Request $request, $id)
-    {
-        // Validasi input form
-        $request->validate([
-            'status' => 'required|in:paid,unpaid',
+            "customer" => array(
+                "given_names" => "John",
+                "email" => "johndoe@example.com",
+            ),
+            "success_redirect_url" => "https://localhost:8000",
+            "failure_redirect_url" => "https://localhost:8000",
         ]);
+        try {
+            $result = $apiInstance->createInvoice($create_invoice_request);
 
-        // Mengambil data booking berdasarkan ID
-        $booking = Booking::findOrFail($id);
-
-        // Pastikan booking milik user yang sedang login
-        if ($booking->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+            $booking = new Booking();
+            $booking->event_id = $request->event_id;
+            $booking->checkout_link = $result['invoice_url'];
+            $booking->external_id = $uuid;
+            $booking->status = 'unpaid';
+            $booking->save();
+        } catch (\Xendit\XenditSdkException $e) {
         }
-
-        // Mengubah status booking
-        $booking->status = $request->input('status');
-        $booking->save();
-
-        return redirect()->route('booking.show', $id)->with('success', 'Booking status updated successfully.');
     }
 }

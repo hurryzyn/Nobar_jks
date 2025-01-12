@@ -9,11 +9,25 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'event_id',
         'user_id',
-        'ticket_id',
-        'quantity', 
-        'price',
+        'event_id',
+        'quantity',
         'status',
+        'unique_code',
+        'checkout_link',
+        'external_id',
+
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
+
+
 }

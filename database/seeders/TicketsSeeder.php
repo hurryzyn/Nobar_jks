@@ -17,17 +17,15 @@ class TicketsSeeder extends Seeder
         DB::table('tickets')->insert([
             [
                 'event_id' => 1,
-                'unique_code' => 'TICKET1234',
                 'user_id' => 1,
-                'price' => 100.00,
+                'price' => 100000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'event_id' => 2,
                 'user_id' => 2,
-                'price' => 150.00,
-                'unique_code' => 'TICKET5678',
+                'price' => 150000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
