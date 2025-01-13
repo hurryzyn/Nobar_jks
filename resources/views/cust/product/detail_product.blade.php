@@ -16,7 +16,7 @@
                 <p class="text-gray-700 mb-4">Description: {{ $event->description }}</p>
                 <p class="text-gray-700 mb-4">Price:
                     {{ $event->price ? 'Rp ' . number_format($event->price, 0, ',', '.') : 'Free' }}</p>
-                <a href="{{ route('checkout', ['id' => $event->id]) }}">
+                <a href="{{ route('checkout', $event->id) }}">
                     <button
                         class="mt-4 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                         Checkout

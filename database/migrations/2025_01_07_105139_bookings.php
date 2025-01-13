@@ -13,8 +13,8 @@ return new class extends Migration{
             $table->string('checkout_link');
             $table->string('external_id');
             $table->integer('quantity');
-            $table->string('unique_code');
-            $table->string('status');
+            $table->string('unique_code')->unique();
+            $table->string('status')->default('unpaid');
             $table->timestamps();
         });
     }

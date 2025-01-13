@@ -27,8 +27,9 @@ Route::get('/detail_product/{id}', [ProductController::class, 'show'])->name('pr
 // Route::post('/checkout', [ProductController::class, 'checkout'])->name('checkout');
 
 // Route untuk halaman booking (jika diperlukan)
+Route::get('/checkout/{id}', [BookingController::class, 'checkout'])->name('checkout');
 Route::post('/payment', [BookingController::class, 'payment'])->name('payment');
-Route::get('/checkout/{$id}', [BookingController::class, 'checkout'])->name('checkout');
+Route::get('/notif/{id}', [BookingController::class, 'notif'])->name('notif');
 
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 // Route::get('/detail_product/{id}', [EventController::class, 'show'])->name('event.show');
