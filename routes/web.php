@@ -58,11 +58,11 @@ Route::delete('/user/{id}', [UserTableController::class, 'destroy'])->name('user
 
 
 Route::get('login', function () {
-    return view('cust.login.login');
+    return view('home');
 })->name('login')->middleware('guest');
 
 Route::get('register', function () {
-    return view('cust.login.register');
+    return view('home');
 })->name('register')->middleware('guest');
 
 Route::post('register', [AuthController::class, 'register'])->name('register.post');
