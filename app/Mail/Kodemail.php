@@ -11,14 +11,16 @@ use Illuminate\Queue\SerializesModels;
 
 class Kodemail extends Mailable
 {
+    public $details;
+   
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($details)
     {
-        //
+        $this->details = $details;
     }
 
     /**
@@ -38,6 +40,7 @@ class Kodemail extends Mailable
     {
         return new Content(
             view: 'cust.mail.mail',
+            
         );
     }
 

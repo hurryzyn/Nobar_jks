@@ -29,5 +29,8 @@ class Booking extends Model
         return $this->belongsTo(Event::class);
     }
 
-
+    public function absens()
+    {
+        return $this->hasMany(Absen::class);
+    }
 }

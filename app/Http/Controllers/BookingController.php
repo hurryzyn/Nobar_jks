@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\MailController;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,12 +15,22 @@ use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
 use Xendit\Invoice\CreateInvoiceRequest;;
 
+
 class BookingController extends Controller
 {
 
     public function __construct()
     {
         Configuration::setXenditKey("xnd_development_ondTrBbmN2mRfY9tZnAzn5TQqI2bRyzCJ9CWh1q1vHPrV55eXeC2yyIYQoXF7d");
+    }
+    public function index()
+    {
+        
+        $bookings = Booking::all();
+        $events = Event::all();
+
+        
+        return view('admin.ticket.ticket', compact('bookings' , 'events'));
     }
     public function checkout($id)
     {
@@ -33,7 +44,7 @@ class BookingController extends Controller
     {
         $event = Event::findOrFail($request->event_id);
         $uuid = (string) Str::uuid();
-    
+
         // Buat objek Invoice API
         $apiInstance = new InvoiceApi();
         $create_invoice_request = new CreateInvoiceRequest([
@@ -48,11 +59,11 @@ class BookingController extends Controller
             "success_redirect_url" => "http://localhost:8000/notif/{$uuid}",
             "failure_redirect_url" => "http://localhost:8000/",
         ]);
-    
+
         try {
             // Buat invoice menggunakan API
             $result = $apiInstance->createInvoice($create_invoice_request);
-            
+
             if (isset($result['status']) && $result['status'] == 'settled') {
                 return response()->json('payment anda di proses');
             }
@@ -60,7 +71,7 @@ class BookingController extends Controller
             do {
                 $uniqueCode = rand(100000, 999999);
             } while (Booking::where('unique_code', $uniqueCode)->exists());
-    
+
             // Buat booking baru
             $booking = new Booking();
             $booking->event_id = $request->event_id;
@@ -70,37 +81,36 @@ class BookingController extends Controller
             $booking->external_id = $uuid;
             $booking->status = 'unpaid';
             $booking->unique_code = $uniqueCode; // Assign unique_code
-    
+
             // Simpan ke database
             $booking->save();
-    
+
             // Redirect atau berikan respon berhasil
             return redirect($result['invoice_url']);
         } catch (\Xendit\XenditSdkException $e) {
             // Tangani error
             return back()->withErrors(['error' => $e->getMessage()]);
         }
-        
     }
 
-    public function notif($id){
+    public function notif($id)
+    {
         $apiInstance = new InvoiceApi();
 
-        $result =$apiInstance->getInvoices(null,$id);
+        $result = $apiInstance->getInvoices(null, $id);
 
         $booking = Booking::where('external_id', $id)->first();
 
-        if(isset($result['status']) && $result['status'] == 'settled'){
-           return response()->json('payment anda di proses');
-           
+        if (isset($result['status']) && $result['status'] == 'settled') {
+            return response()->json('payment anda di proses');
         }
 
-        $booking->status =$result[0]['status'];
+        $booking->status = $result[0]['status'];
         $booking->save();
+
+        $mailcontroller = new MailController();
+        $mailcontroller->sendEmail($booking->id);
 
         return redirect('/')->with('success', 'Pembayaran anda berhasil');
     }
-    
-
-    
 }

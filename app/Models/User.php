@@ -40,4 +40,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',  // Casting to datetime for 'email_verified_at'
     ];
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }   
 }

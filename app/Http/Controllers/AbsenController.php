@@ -12,6 +12,7 @@ class AbsenController extends Controller
     {
         $absens = Absen::with('booking.event', 'booking.user')->get();
         $events = Event::all();
+        dd($absens);
         return view('admin.absen.absen', compact('absens', 'events'));
     }
 

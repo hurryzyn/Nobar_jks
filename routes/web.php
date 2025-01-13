@@ -18,10 +18,9 @@ use App\Models\Booking;
 Route::get('/home', [ProductController::class, 'index'])->name('home');
 Route::get('/', [ProductController::class, 'index'])->name('home');
 
-// Route untuk halaman detail produk berdasarkan ID event
 
 // Route untuk halaman utama
-Route::get('/ticket',[BookingController::class, 'index'])->name('ticket.index');
+Route::get('/ticket',[BookingController::class, 'index'])->name('booking.index');
 
 
 Route::get('/detail_product/{id}', [ProductController::class, 'show'])->name('product.show');
@@ -75,4 +74,4 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-Route::get('/send-unique-code-email/{bookingId}', [MailController::class, 'SendEmail'])->name('send-email');
+Route::get('/sendemail/{bookingId}', [MailController::class, 'SendEmail'])->name('send-email');
