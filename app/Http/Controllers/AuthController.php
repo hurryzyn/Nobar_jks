@@ -23,7 +23,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string',
+            'role' => 'required|string|in:user',
         ]);
 
         // Membuat user baru
@@ -34,11 +34,12 @@ class AuthController extends Controller
             'role' => $validated['role'],
         ]);
 
+       
         // Login otomatis setelah registrasi
         Auth::login($user);
 
         // Redirect ke halaman dashboard
-        return redirect()->route('admin.user.user')->with('success', 'User created and logged in successfully.');
+        return redirect()->route('home')->with('success', 'User created and logged in successfully.');
     }
 
     // Login pengguna

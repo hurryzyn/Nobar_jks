@@ -8,6 +8,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AbsenController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\UserTableController;
 use App\Http\Middleware\CheckRole;
 use App\Models\Booking;
@@ -72,3 +73,6 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout')->middle
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 });
+
+
+Route::get('/send-unique-code-email/{bookingId}', [MailController::class, 'SendEmail'])->name('send-email');
