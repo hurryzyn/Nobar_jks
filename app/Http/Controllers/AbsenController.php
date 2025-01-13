@@ -12,7 +12,7 @@ class AbsenController extends Controller
     {
         $absens = Absen::with('booking.event', 'booking.user')->get();
         $events = Event::all();
-        dd($absens);
+        
         return view('admin.absen.absen', compact('absens', 'events'));
     }
 
@@ -27,12 +27,12 @@ class AbsenController extends Controller
             return redirect()->back()->withErrors(['unique_code' => 'Booking not found.']);
         }
 
-        if ($booking->status !== 'paid') {
+        if ($booking->status !== 'PAID') {
             return redirect()->back()->withErrors(['unique_code' => 'Booking is not paid.']);
         }
 
         $absen = Absen::where('booking_id', $booking->id)->first();
-        if (!$absen) {
+        if (!$absen) {  
             $absen = new Absen();
             $absen->booking_id = $booking->id;
         }

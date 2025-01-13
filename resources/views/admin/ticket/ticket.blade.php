@@ -24,6 +24,7 @@
                             <th class="px-4 py-2">Nama Pembeli</th>
                             <th class="px-4 py-2">Jumlah Tiket</th>
                             <th class="px-4 py-2">Status</th>
+                            <th class="px-4 py-2">Unique Code</th>
                             <th class="px-4 py-2">Event</th>
                         </tr>
                     </thead>
@@ -33,6 +34,7 @@
                                 <td class="border px-4 py-2">{{ $booking->user->name }}</td>
                                 <td class="border px-4 py-2">{{ $booking->quantity }}</td>
                                 <td class="border px-4 py-2">{{ $booking->status }}</td>
+                                <td class="border px-4 py-2">{{ $booking->unique_code }}</td>
                                 <td class="border px-4 py-2">{{ $booking->event->name }}</td>
                             </tr>
                         @endforeach

@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Xendit\Xendit;
 use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
-use Xendit\Invoice\CreateInvoiceRequest;;
+use Xendit\Invoice\CreateInvoiceRequest;
+use App\Models\Absen;
 
 
 class BookingController extends Controller
@@ -107,6 +108,12 @@ class BookingController extends Controller
 
         $booking->status = $result[0]['status'];
         $booking->save();
+         
+         Absen::create([
+            'booking_id' => $booking->id,
+            'status' => 'not attended', 
+        ]);
+
 
         $mailcontroller = new MailController();
         $mailcontroller->sendEmail($booking->id);
